@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import { Link } from '@/util/chakraClient';
+import { Link } from '@/shared/lib/chakraClient';
 import { Heading } from '@chakra-ui/react';
 
 export const metadata: Metadata = {

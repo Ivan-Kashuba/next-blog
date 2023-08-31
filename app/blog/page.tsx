@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from '@/util/chakraClient';
+import Posts from '@/entities/Post/Posts';
 
 export interface Post {
     userId: number;
@@ -7,6 +7,7 @@ export interface Post {
     title: string;
     body: string;
 }
+
 async function getData() {
     const response = await fetch('https://jsonplaceholder.typicode.com/posts', {
         next: {
@@ -22,21 +23,11 @@ async function getData() {
 }
 
 const BlogPage = async () => {
-    const posts: Post[] = await getData();
+    // const posts: Post[] = await getData();
 
     return (
         <div className="flex gap-[10px]">
-            <div>Read our blog 7:</div>
-            <Link href="/blog/7">Read</Link>
-            <ul className="mt-[30px]">
-                {posts.map((post) => {
-                    return (
-                        <li key={post.id}>
-                            <Link href={`/blog/${post.id}`}>{post.title}</Link>
-                        </li>
-                    );
-                })}
-            </ul>
+            <Posts />
         </div>
     );
 };

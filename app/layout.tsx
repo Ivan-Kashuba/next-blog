@@ -1,8 +1,9 @@
-import './globals.css';
+import './global/style/globals.css';
 import type { Metadata } from 'next';
-import { Providers } from '@/app/providers';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
+import { Providers } from '@/app/global/hoc/providers';
+
+import { Footer } from '@/app/global/ui/Footer';
+import { HeaderNavbar } from '@/widgets/HeaderNavbar';
 
 export const metadata: Metadata = {
     title: 'Blog',
@@ -14,7 +15,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <html lang="en">
             <body>
                 <Providers>
-                    <Header />
+                    <HeaderNavbar />
                     <main className="min-h-[calc(100vh-120px)] p-[30px]">{children}</main>
                     <Footer />
                 </Providers>
