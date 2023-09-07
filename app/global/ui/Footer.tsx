@@ -1,5 +1,5 @@
-import React from 'react';
-import { Link } from '@/shared/lib/chakraClient';
+'use client';
+import { Link } from '@chakra-ui/next-js';
 
 export const Footer = () => {
     return (

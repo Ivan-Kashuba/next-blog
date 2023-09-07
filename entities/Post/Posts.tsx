@@ -1,36 +1,25 @@
 'use client';
-import { Link } from '@/shared/lib/chakraClient';
 import { Post } from '@/app/blog/page';
-import { Spinner } from '@chakra-ui/react';
+import { Link } from '@chakra-ui/next-js';
+import { fetcher } from '@/shared/lib/api/fetcher';
 import useSWR from 'swr';
-import { fetcher } from '@/shared/lib/fetcher';
 
-const Posts = () => {
-    // const { posts, isLoading, getAllPosts } = usePosts();
+interface IPostProps {
+    defaultPosts: Post[];
+}
+
+const Posts = ({ defaultPosts }: IPostProps) => {
     const { data: posts, isLoading } = useSWR<Post[]>(
         'https://jsonplaceholder.typicode.com/posts',
         fetcher,
-        { isPaused: () => false },
+        {
+            fallbackData: defaultPosts,
+        },
     );
-    console.log('posts:', posts);
-
-    // useEffect(() => {
-    //     if (!posts.length) {
-    //         getAllPosts();
-    //     }
-    // }, []);
-
-    if (isLoading) {
-        return (
-            <h2>
-                <Spinner size={'xl'} />
-            </h2>
-        );
-    }
 
     return (
         <ul>
-            {(posts as Post[])?.map((post) => {
+            {posts?.map((post) => {
                 return (
                     <li key={post.id}>
                         <Link href={`/blog/${post.id}`}>{post.title}</Link>

@@ -1,5 +1,5 @@
-import { UserMenu } from '../ui/UserMenu';
 import { Navigation } from '../ui/Navigation';
+import { UserMenu } from '../ui/UserMenu';
 
 const navItems = [
     { label: 'Home', href: '/' },

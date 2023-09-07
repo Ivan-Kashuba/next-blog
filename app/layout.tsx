@@ -1,6 +1,6 @@
 import './global/style/globals.css';
 import type { Metadata } from 'next';
-import { Providers } from '@/app/global/hoc/providers';
+import { Providers } from '@/app/global/providers/providers';
 
 import { Footer } from '@/app/global/ui/Footer';
 import { HeaderNavbar } from '@/widgets/HeaderNavbar';
