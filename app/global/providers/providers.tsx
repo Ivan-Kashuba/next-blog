@@ -1,10 +1,9 @@
 'use client';
-import { CacheProvider } from '@chakra-ui/next-js';
-import { ChakraProvider } from '@chakra-ui/react';
 import { AppProgressBar as ProgressBar } from 'next-nprogress-bar';
-import { AuthWrapper } from '@/app/global/providers/auth/AuthWrapper';
+import { AuthWrapper } from '@/app/global/providers/auth/ui/AuthWrapper';
 import { useEffect } from 'react';
-import { useAuth } from '@/app/global/providers/auth/useAuth';
+import { useAuth } from '@/app/global/providers/auth/model/store/useAuth';
+import { NextUIProvider } from '@nextui-org/react';
 
 export function Providers({ children }: { children: React.ReactNode }) {
     const { setRenderedTrue } = useAuth();
@@ -14,11 +13,11 @@ export function Providers({ children }: { children: React.ReactNode }) {
     }, []);
 
     return (
-        <CacheProvider>
-            <ChakraProvider>
+        <>
+            <NextUIProvider>
                 <AuthWrapper>{children}</AuthWrapper>
-            </ChakraProvider>
+            </NextUIProvider>
             <ProgressBar height="6px" color="#a29999" shallowRouting />
-        </CacheProvider>
+        </>
     );
 }

@@ -2,7 +2,7 @@ import axios, { AxiosRequestConfig } from 'axios';
 import { getLocalStorageKey } from '@/shared/lib/localStorage/getLocalStorageKey';
 import { setLocalStorageKey } from '@/shared/lib/localStorage/setLocalStorageKey';
 import { removeLocalStorageKey } from '@/shared/lib/localStorage/removeLocalStorageKey';
-import { useAuth } from '@/app/global/providers/auth/useAuth';
+import { useAuth } from '@/app/global/providers/auth/model/store/useAuth';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || 'http://test-blog-api.ficuslife.com/api/v1';
 

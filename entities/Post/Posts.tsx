@@ -1,8 +1,9 @@
 'use client';
 import { Post } from '@/app/blog/page';
-import { Link } from '@chakra-ui/next-js';
+
 import { fetcher } from '@/shared/lib/api/fetcher';
 import useSWR from 'swr';
+import { Link } from '@nextui-org/react';
 
 interface IPostProps {
     defaultPosts: Post[];

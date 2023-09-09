@@ -1,28 +1,19 @@
 import React, { HTMLInputTypeAttribute, useCallback, useState } from 'react';
-import {
-    FormControl,
-    FormHelperText,
-    FormLabel,
-    Icon,
-    Input,
-    InputGroup,
-    InputRightElement,
-    Textarea,
-} from '@chakra-ui/react';
+import { Input, Textarea } from '@nextui-org/react';
 import { useFormikContext } from 'formik';
 import { IRegistrationFormValues } from '@/features/registration/ui/RegistrationForm/RegistrationForm';
-import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
+import { EyeFilledIcon, EyeSlashFilledIcon } from '@nextui-org/shared-icons';
 
 export interface IRegistrationFormInputItem {
     label: string;
     name: keyof IRegistrationFormValues;
-    helperText?: string;
     type?: HTMLInputTypeAttribute;
     isTextArea?: boolean;
+    isRequired?: boolean;
 }
 
 export const RegistrationFormInputItem = (props: IRegistrationFormInputItem) => {
-    const { name, helperText, label, type, isTextArea } = props;
+    const { name, label, type, isTextArea, isRequired } = props;
     const { values, handleChange, handleBlur } = useFormikContext<IRegistrationFormValues>();
     const [show, setShow] = useState(type !== 'password');
 
@@ -31,37 +22,45 @@ export const RegistrationFormInputItem = (props: IRegistrationFormInputItem) => 
     }, []);
 
     return (
-        <FormControl>
-            <FormLabel>{label}</FormLabel>
+        <>
             {isTextArea ? (
                 <Textarea
+                    label={label}
                     onBlur={handleBlur}
                     onChange={handleChange}
                     name={name}
                     value={values[name]}
                 />
             ) : (
-                <InputGroup>
-                    <Input
-                        onBlur={handleBlur}
-                        type={show ? 'text' : 'password'}
-                        onChange={handleChange}
-                        name={name}
-                        value={values[name]}
-                    />
-                    {type === 'password' && (
-                        <InputRightElement width="2.5rem">
-                            <Icon
-                                className="cursor-pointer"
-                                onClick={onShowClick}
-                                as={show ? AiFillEyeInvisible : AiFillEye}
-                            />
-                        </InputRightElement>
-                    )}
-                </InputGroup>
+                <Input
+                    variant="underlined"
+                    onBlur={handleBlur}
+                    type={show ? 'text' : 'password'}
+                    onChange={handleChange}
+                    name={name}
+                    value={values[name]}
+                    label={label}
+                    placeholder="Type"
+                    isRequired={isRequired}
+                    endContent={
+                        type === 'password' && (
+                            <>
+                                <button
+                                    className="focus:outline-none"
+                                    type="button"
+                                    onClick={onShowClick}
+                                >
+                                    {show ? (
+                                        <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                                    ) : (
+                                        <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                                    )}
+                                </button>
+                            </>
+                        )
+                    }
+                />
             )}
-
-            {helperText && <FormHelperText>{helperText}</FormHelperText>}
-        </FormControl>
+        </>
     );
 };

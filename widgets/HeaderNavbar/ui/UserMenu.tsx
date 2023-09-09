@@ -2,24 +2,26 @@
 import {
     Avatar,
     Button,
-    Flex,
-    Menu,
-    MenuButton,
-    MenuItem,
-    MenuList,
-    useColorMode,
-} from '@chakra-ui/react';
+    Dropdown,
+    DropdownItem,
+    DropdownMenu,
+    DropdownTrigger,
+} from '@nextui-org/react';
 import Link from 'next/link';
 import { STORAGE_KEY } from '@/shared/lib/api/http';
 import { useCallback } from 'react';
 import { removeLocalStorageKey } from '@/shared/lib/localStorage/removeLocalStorageKey';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/app/global/providers/auth/useAuth';
+import { useAuth } from '@/app/global/providers/auth/model/store/useAuth';
+
+enum Theme {
+    DARK = 'dark',
+    LIGHT = 'light',
+}
 
 export const UserMenu = () => {
     const { isAuthorized, setAuthorized, isRendered } = useAuth();
 
-    const { toggleColorMode } = useColorMode();
     const router = useRouter();
 
     const onLogout = useCallback(() => {
@@ -28,29 +30,52 @@ export const UserMenu = () => {
         router.replace('/login');
     }, [router, setAuthorized]);
 
+    const toggleColorMode = useCallback(() => {
+        const root = document.getElementsByTagName('html')[0];
+
+        root.classList.toggle(Theme.DARK);
+
+        if (root.classList.contains(Theme.DARK)) {
+            document.cookie = `theme=${Theme.DARK}`;
+        } else {
+            document.cookie = `theme=${Theme.LIGHT}`;
+        }
+    }, []);
+
     return (
         <div className="ml-auto">
             {isRendered && (
                 <>
                     {isAuthorized ? (
-                        <Menu>
-                            <MenuButton as={Avatar} className="cursor-pointer" />
-                            <MenuList>
-                                <MenuItem onClick={toggleColorMode}>Change color theme</MenuItem>
-                                <MenuItem onClick={onLogout}>Logout</MenuItem>
-                            </MenuList>
-                        </Menu>
+                        <Dropdown>
+                            <DropdownTrigger>
+                                <Avatar className="cursor-pointer" />
+                            </DropdownTrigger>
+                            <DropdownMenu aria-label="Static Actions">
+                                <DropdownItem onClick={toggleColorMode} key="theme color">
+                                    Change color theme
+                                </DropdownItem>
+                                <DropdownItem
+                                    onClick={onLogout}
+                                    key="delete"
+                                    className="text-danger"
+                                    color="danger"
+                                >
+                                    Logout
+                                </DropdownItem>
+                            </DropdownMenu>
+                        </Dropdown>
                     ) : (
-                        <Flex gap={30}>
+                        <div className="flex gap-[30px]">
                             <Link href={'/login'}>
-                                <Button variant="outline" colorScheme={'purple'}>
+                                <Button color="secondary" variant="ghost">
                                     Login
                                 </Button>
                             </Link>
                             <Link href={'register'}>
-                                <Button colorScheme={'pink'}>Register</Button>
+                                <Button color="danger">Register</Button>
                             </Link>
-                        </Flex>
+                        </div>
                     )}
                 </>
             )}

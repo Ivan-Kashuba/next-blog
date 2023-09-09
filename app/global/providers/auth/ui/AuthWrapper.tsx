@@ -2,7 +2,7 @@ import { useRouter } from 'next/navigation';
 import { ReactNode, useEffect } from 'react';
 import { getLocalStorageKey } from '@/shared/lib/localStorage/getLocalStorageKey';
 import { STORAGE_KEY } from '@/shared/lib/api/http';
-import { useAuth } from '@/app/global/providers/auth/useAuth';
+import { useAuth } from '@/app/global/providers/auth/model/store/useAuth';
 
 interface RequireAuthProps {
     children: ReactNode;

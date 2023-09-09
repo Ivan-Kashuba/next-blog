@@ -1,8 +1,7 @@
 'use client';
-import { Spinner } from '@chakra-ui/react';
 
 const BlogLoading = () => {
-    return <Spinner size={'xl'} />;
+    return <div>Loading...</div>;
 };
 
 export default BlogLoading;

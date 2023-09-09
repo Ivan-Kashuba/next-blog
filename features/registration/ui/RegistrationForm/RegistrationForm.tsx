@@ -1,13 +1,13 @@
 'use client';
 import { Form, FormikProps, FormikProvider, useFormik } from 'formik';
 import http from '@/shared/lib/api/http';
-import { Button, useToast } from '@chakra-ui/react';
 import { useMemo, useState } from 'react';
 import {
     IRegistrationFormInputItem,
     RegistrationFormInputItem,
-} from '@/features/registration/ui/RegistrationForm/RegistrationFormInputItem';
+} from '../../ui/RegistrationForm/RegistrationFormInputItem';
 import { useRouter } from 'next/navigation';
+import { Button } from '@nextui-org/react';
 
 export type IRegistrationFormValues = {
     email: string;
@@ -20,7 +20,6 @@ export type IRegistrationFormValues = {
 };
 
 export const RegistrationForm = () => {
-    const toast = useToast();
     const router = useRouter();
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -38,13 +37,6 @@ export const RegistrationForm = () => {
             setIsSubmitting(true);
             http.post('http://test-blog-api.ficuslife.com/api/v1/users', values)
                 .then(() => {
-                    toast({
-                        title: 'Account created successfully',
-                        status: 'success',
-                        isClosable: true,
-                        position: 'top-right',
-                    });
-
                     http.post('http://test-blog-api.ficuslife.com/api/v1/auth', {
                         email: values.email,
                         password: values.password,
@@ -57,14 +49,7 @@ export const RegistrationForm = () => {
                             router.push('/login');
                         });
                 })
-                .catch(() => {
-                    toast({
-                        title: 'Something went wrong',
-                        status: 'error',
-                        isClosable: true,
-                        position: 'top-right',
-                    });
-                })
+                .catch(() => {})
                 .finally(() => {
                     setIsSubmitting(false);
                 });
@@ -73,7 +58,11 @@ export const RegistrationForm = () => {
 
     const formDataToMap: IRegistrationFormInputItem[] = useMemo(() => {
         return [
-            { name: 'email', helperText: "We'll never share your email.", label: 'Email address' },
+            {
+                name: 'email',
+                label: 'Email address',
+                isRequired: true,
+            },
             { name: 'name', label: 'Name' },
             {
                 name: 'profession',
@@ -81,7 +70,6 @@ export const RegistrationForm = () => {
             },
             {
                 name: 'skills',
-                helperText: 'Describe your skills',
                 label: 'Skills',
                 isTextArea: true,
             },
@@ -97,9 +85,9 @@ export const RegistrationForm = () => {
             },
             {
                 name: 'password',
-                helperText: 'At least 5 symbols',
                 label: 'Password',
                 type: 'password',
+                isRequired: true,
             },
         ];
     }, []);
@@ -111,7 +99,7 @@ export const RegistrationForm = () => {
                     return <RegistrationFormInputItem key={formItem.name} {...formItem} />;
                 })}
 
-                <Button className="w-[100%]" isLoading={isSubmitting} type="submit">
+                <Button variant="ghost" className="w-[100%]" isLoading={isSubmitting} type="submit">
                     Create account
                 </Button>
             </Form>

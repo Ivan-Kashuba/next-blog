@@ -1,9 +1,9 @@
 import './global/style/globals.css';
 import type { Metadata } from 'next';
 import { Providers } from '@/app/global/providers/providers';
-
 import { Footer } from '@/app/global/ui/Footer';
 import { HeaderNavbar } from '@/widgets/HeaderNavbar';
+import { cookies } from 'next/headers';
 
 export const metadata: Metadata = {
     title: 'Blog',
@@ -11,8 +11,10 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+    const theme = cookies().get('theme');
+
     return (
-        <html lang="en">
+        <html lang="en" className={theme?.value}>
             <body>
                 <Providers>
                     <HeaderNavbar />

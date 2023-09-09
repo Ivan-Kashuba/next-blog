@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import { Link } from '@chakra-ui/next-js';
+import { Link } from '@nextui-org/react';
 import { usePathname } from 'next/navigation';
 
 interface NavigationProps {
@@ -18,9 +18,9 @@ export const Navigation = (props: NavigationProps) => {
                 const isActive = pathname === item.href;
                 return (
                     <Link
-                        className={isActive ? 'text-blue-600' : ''}
                         key={item.label}
                         href={item.href}
+                        underline={isActive ? 'always' : 'hover'}
                     >
                         {item.label}
                     </Link>
