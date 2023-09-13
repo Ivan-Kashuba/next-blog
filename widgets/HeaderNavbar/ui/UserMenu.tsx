@@ -8,27 +8,36 @@ import {
     DropdownTrigger,
 } from '@nextui-org/react';
 import Link from 'next/link';
-import { STORAGE_KEY } from '@/shared/lib/api/http';
 import { useCallback } from 'react';
-import { removeLocalStorageKey } from '@/shared/lib/localStorage/removeLocalStorageKey';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/app/global/providers/auth/model/store/useAuth';
+import { signOut, useSession } from 'next-auth/react';
+import { UserSession } from '@/app/api/auth/[...nextauth]/next-auth';
 
 enum Theme {
     DARK = 'dark',
     LIGHT = 'light',
 }
 
-export const UserMenu = () => {
-    const { isAuthorized, setAuthorized, isRendered } = useAuth();
+interface UserMenuPropsI {
+    user?: UserSession;
+    isAuthorizedOnServer?: boolean;
+}
+
+export const UserMenu = (props: UserMenuPropsI) => {
+    const { isAuthorizedOnServer, user } = props;
 
     const router = useRouter();
+    const session = useSession();
+
+    const isUserAuthorized = isAuthorizedOnServer || session?.data?.user;
 
     const onLogout = useCallback(() => {
-        removeLocalStorageKey(STORAGE_KEY);
-        setAuthorized(false);
-        router.replace('/login');
-    }, [router, setAuthorized]);
+        signOut({ callbackUrl: '/login' });
+    }, [router]);
+
+    const onNavigateToProfile = useCallback(() => {
+        router.push('/profile');
+    }, [router]);
 
     const toggleColorMode = useCallback(() => {
         const root = document.getElementsByTagName('html')[0];
@@ -44,41 +53,45 @@ export const UserMenu = () => {
 
     return (
         <div className="ml-auto">
-            {isRendered && (
-                <>
-                    {isAuthorized ? (
-                        <Dropdown>
-                            <DropdownTrigger>
-                                <Avatar className="cursor-pointer" />
-                            </DropdownTrigger>
-                            <DropdownMenu aria-label="Static Actions">
-                                <DropdownItem onClick={toggleColorMode} key="theme color">
-                                    Change color theme
-                                </DropdownItem>
-                                <DropdownItem
-                                    onClick={onLogout}
-                                    key="delete"
-                                    className="text-danger"
-                                    color="danger"
-                                >
-                                    Logout
-                                </DropdownItem>
-                            </DropdownMenu>
-                        </Dropdown>
-                    ) : (
-                        <div className="flex gap-[30px]">
-                            <Link href={'/login'}>
-                                <Button color="secondary" variant="ghost">
-                                    Login
-                                </Button>
-                            </Link>
-                            <Link href={'register'}>
-                                <Button color="danger">Register</Button>
-                            </Link>
-                        </div>
-                    )}
-                </>
-            )}
+            <>
+                {isUserAuthorized ? (
+                    <Dropdown>
+                        <DropdownTrigger>
+                            <Avatar
+                                src={user?.image || user?.avatar || ''}
+                                className="cursor-pointer"
+                            />
+                        </DropdownTrigger>
+                        <DropdownMenu aria-label="Static Actions">
+                            <DropdownItem key="profile" onClick={onNavigateToProfile}>
+                                Profile
+                            </DropdownItem>
+                            <DropdownItem key="theme" onClick={toggleColorMode}>
+                                Change color theme
+                            </DropdownItem>
+                            <DropdownItem
+                                key="logout"
+                                onClick={onLogout}
+                                className="text-danger"
+                                color="danger"
+                            >
+                                Logout
+                            </DropdownItem>
+                        </DropdownMenu>
+                    </Dropdown>
+                ) : (
+                    <div className="flex gap-[30px]">
+                        <Link href={'/login'}>
+                            <Button color="secondary" variant="ghost">
+                                Login
+                            </Button>
+                        </Link>
+                        <Link href={'register'}>
+                            <Button color="danger">Register</Button>
+                        </Link>
+                    </div>
+                )}
+            </>
         </div>
     );
 };

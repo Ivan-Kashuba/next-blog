@@ -2,21 +2,8 @@ import axios, { AxiosRequestConfig } from 'axios';
 import { getLocalStorageKey } from '@/shared/lib/localStorage/getLocalStorageKey';
 import { setLocalStorageKey } from '@/shared/lib/localStorage/setLocalStorageKey';
 import { removeLocalStorageKey } from '@/shared/lib/localStorage/removeLocalStorageKey';
-import { useAuth } from '@/app/global/providers/auth/model/store/useAuth';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || 'http://test-blog-api.ficuslife.com/api/v1';
-
-interface IStorage {
-    getItem(key: string): string | null;
-    setItem(key: string, value: string): void;
-}
-
-export interface IPaginationResult {
-    count: number;
-    next: string;
-    prev: string;
-    results: Object[];
-}
 
 interface IBadRequest {
     response?: {
@@ -33,16 +20,6 @@ interface IBadRequest {
         data: any;
         responseURL: string;
     };
-}
-
-declare global {
-    interface Window {
-        localStorage: IStorage;
-    }
-
-    interface Object {
-        entries: Function;
-    }
 }
 
 class HTTPService {
@@ -113,9 +90,6 @@ class HTTPService {
         const token = 'Bearer ' + tokenCode;
         setLocalStorageKey<string>(STORAGE_KEY, tokenCode);
         axios.defaults.headers.common.Authorization = token ? token : '';
-        if (token) {
-            useAuth.getState().setAuthorized(true);
-        }
     }
 
     handleError(error: IBadRequest) {
@@ -126,7 +100,6 @@ class HTTPService {
             error.response?.config.url !== `${error.response?.config.baseURL}/users` &&
             error.response?.config.method !== 'post'
         ) {
-            useAuth.getState().setAuthorized(false);
             removeLocalStorageKey(STORAGE_KEY);
             window.location.href = '/login';
         }

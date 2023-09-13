@@ -2,6 +2,7 @@
 import React from 'react';
 import { Link } from '@nextui-org/react';
 import { usePathname } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 
 interface NavigationProps {
     navigationItems: { label: string; href: string }[];

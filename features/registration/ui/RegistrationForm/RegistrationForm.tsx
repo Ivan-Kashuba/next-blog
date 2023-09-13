@@ -2,12 +2,10 @@
 import { Form, FormikProps, FormikProvider, useFormik } from 'formik';
 import http from '@/shared/lib/api/http';
 import { useMemo, useState } from 'react';
-import {
-    IRegistrationFormInputItem,
-    RegistrationFormInputItem,
-} from '../../ui/RegistrationForm/RegistrationFormInputItem';
+import { IRegistrationFormInputItem, FormInputItem } from '@/shared/ui/FormInputItem/FormInputItem';
 import { useRouter } from 'next/navigation';
 import { Button } from '@nextui-org/react';
+import { signIn } from 'next-auth/react';
 
 export type IRegistrationFormValues = {
     email: string;
@@ -33,23 +31,21 @@ export const RegistrationForm = () => {
             profession: '',
             details: '',
         },
-        onSubmit: async (values, { setSubmitting }) => {
+        onSubmit: async (values) => {
             setIsSubmitting(true);
             http.post('http://test-blog-api.ficuslife.com/api/v1/users', values)
                 .then(() => {
-                    http.post('http://test-blog-api.ficuslife.com/api/v1/auth', {
+                    signIn('credentials', {
                         email: values.email,
                         password: values.password,
-                    })
-                        .then((res) => {
-                            http.setAuthHeader(res.token);
-                            router.push('/');
-                        })
-                        .catch(() => {
-                            router.push('/login');
-                        });
+                        redirect: false,
+                    }).then(() => {
+                        router.push('/profile');
+                    });
                 })
-                .catch(() => {})
+                .catch(() => {
+                    router.push('/login');
+                })
                 .finally(() => {
                     setIsSubmitting(false);
                 });
@@ -96,7 +92,7 @@ export const RegistrationForm = () => {
         <FormikProvider value={formik}>
             <Form className="flex flex-col gap-[30px] items-center justify-center w-[500px] m-auto">
                 {formDataToMap.map((formItem) => {
-                    return <RegistrationFormInputItem key={formItem.name} {...formItem} />;
+                    return <FormInputItem key={formItem.name} {...formItem} />;
                 })}
 
                 <Button variant="ghost" className="w-[100%]" isLoading={isSubmitting} type="submit">

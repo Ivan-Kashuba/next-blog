@@ -12,7 +12,7 @@ export interface IRegistrationFormInputItem {
     isRequired?: boolean;
 }
 
-export const RegistrationFormInputItem = (props: IRegistrationFormInputItem) => {
+export const FormInputItem = (props: IRegistrationFormInputItem) => {
     const { name, label, type, isTextArea, isRequired } = props;
     const { values, handleChange, handleBlur } = useFormikContext<IRegistrationFormValues>();
     const [show, setShow] = useState(type !== 'password');

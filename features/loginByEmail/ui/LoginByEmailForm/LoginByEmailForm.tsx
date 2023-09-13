@@ -1,16 +1,17 @@
 'use client';
-import http from '@/shared/lib/api/http';
 import { Form, FormikProps, FormikProvider, useFormik } from 'formik';
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import { Button, Input } from '@nextui-org/react';
+import { FormInputItem } from '@/shared/ui/FormInputItem/FormInputItem';
+import { signIn } from 'next-auth/react';
 
 export type ILoginFormValues = {
     email: string;
     password: string;
 };
 
-export const LoginForm = () => {
+export const LoginByEmailForm = () => {
     const router = useRouter();
 
     const formik: FormikProps<ILoginFormValues> = useFormik<ILoginFormValues>({
@@ -19,15 +20,17 @@ export const LoginForm = () => {
             password: '',
         },
         onSubmit: async (values) => {
-            http.post('/auth', values)
-                .then((res) => {
-                    http.setAuthHeader(res.token);
-                    router.push('/');
-                })
-                .catch(() => {})
-                .finally(() => {
-                    formik.setSubmitting(false);
-                });
+            const response = await signIn('credentials', {
+                email: values.email,
+                password: values.password,
+                redirect: false,
+            });
+
+            if (response && !response.error) {
+                router.push('/profile');
+            }
+
+            formik.setSubmitting(false);
         },
     });
 
@@ -39,21 +42,12 @@ export const LoginForm = () => {
                     onBlur={formik.handleBlur}
                     type="text"
                     onChange={formik.handleChange}
-                    name={'email'}
+                    name="email"
                     value={formik.values.email}
-                    label={'Email'}
-                    placeholder="Type"
+                    label="Email"
                 />
-                <Input
-                    variant="underlined"
-                    onBlur={formik.handleBlur}
-                    type="text"
-                    onChange={formik.handleChange}
-                    name={'password'}
-                    value={formik.values.password}
-                    label={'Password'}
-                    placeholder="Type"
-                />
+
+                <FormInputItem name="password" type="password" label="Password" />
 
                 <Button
                     className="w-[100%]"
@@ -61,7 +55,7 @@ export const LoginForm = () => {
                     isLoading={formik.isSubmitting}
                     type="submit"
                 >
-                    Log in
+                    Log in with Email
                 </Button>
             </Form>
         </FormikProvider>
