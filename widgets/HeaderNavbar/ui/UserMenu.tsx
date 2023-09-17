@@ -12,11 +12,8 @@ import { useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { signOut, useSession } from 'next-auth/react';
 import { UserSession } from '@/app/api/auth/[...nextauth]/next-auth';
-
-enum Theme {
-    DARK = 'dark',
-    LIGHT = 'light',
-}
+import { Theme } from '@/shared/types/theme';
+import { useTheme } from '@/shared/lib/hooks/useTheme/useTheme';
 
 interface UserMenuPropsI {
     user?: UserSession;
@@ -25,6 +22,7 @@ interface UserMenuPropsI {
 
 export const UserMenu = (props: UserMenuPropsI) => {
     const { isAuthorizedOnServer, user } = props;
+    const { setTheme } = useTheme();
 
     const router = useRouter();
     const session = useSession();
@@ -46,8 +44,10 @@ export const UserMenu = (props: UserMenuPropsI) => {
 
         if (root.classList.contains(Theme.DARK)) {
             document.cookie = `theme=${Theme.DARK}`;
+            setTheme(Theme.DARK);
         } else {
             document.cookie = `theme=${Theme.LIGHT}`;
+            setTheme(Theme.LIGHT);
         }
     }, []);
 

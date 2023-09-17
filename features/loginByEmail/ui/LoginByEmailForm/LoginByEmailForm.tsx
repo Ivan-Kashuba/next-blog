@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Button, Input } from '@nextui-org/react';
 import { FormInputItem } from '@/shared/ui/FormInputItem/FormInputItem';
 import { signIn } from 'next-auth/react';
+import { toast } from 'react-toastify';
 
 export type ILoginFormValues = {
     email: string;
@@ -27,7 +28,10 @@ export const LoginByEmailForm = () => {
             });
 
             if (response && !response.error) {
+                toast.success('Welcome back!');
                 router.push('/profile');
+            } else {
+                toast.error('Something went wrong');
             }
 
             formik.setSubmitting(false);

@@ -6,6 +6,7 @@ import { IRegistrationFormInputItem, FormInputItem } from '@/shared/ui/FormInput
 import { useRouter } from 'next/navigation';
 import { Button } from '@nextui-org/react';
 import { signIn } from 'next-auth/react';
+import { toast } from 'react-toastify';
 
 export type IRegistrationFormValues = {
     email: string;
@@ -39,12 +40,25 @@ export const RegistrationForm = () => {
                         email: values.email,
                         password: values.password,
                         redirect: false,
-                    }).then(() => {
-                        router.push('/profile');
-                    });
+                    })
+                        .then(() => {
+                            toast.success('Welcome!');
+                            router.push('/profile');
+                        })
+                        .catch(() => {
+                            toast.error('Here');
+                            router.push('/login');
+                        });
                 })
-                .catch(() => {
-                    router.push('/login');
+                .catch((err) => {
+                    console.log('err?.data?.error[0]?.message:', err?.data?.error[0]?.message);
+
+                    const errorText =
+                        err?.data?.error[0]?.message ||
+                        err?.data?.error.toString() ||
+                        'Something went wrong';
+
+                    toast.error(errorText);
                 })
                 .finally(() => {
                     setIsSubmitting(false);

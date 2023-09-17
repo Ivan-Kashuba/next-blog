@@ -1,4 +1,4 @@
-import { User } from '@/entities/User/model/types/User';
+import { User } from '@/entities/User';
 
 interface UserFromCredentialLogin extends User {
     token: string;
