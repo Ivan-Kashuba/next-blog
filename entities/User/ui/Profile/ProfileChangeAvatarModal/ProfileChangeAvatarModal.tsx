@@ -9,6 +9,8 @@ import {
 } from '@nextui-org/react';
 import { toast } from 'react-toastify';
 import { Disclosure } from '@/shared/types/disclosure';
+import http from '@/shared/lib/api/http';
+import { useSession } from 'next-auth/react';
 
 interface ProfileChangeAvatarModalPropsI {
     disclosure: Disclosure;
@@ -20,6 +22,8 @@ export const ProfileChangeAvatarModal = (props: ProfileChangeAvatarModalPropsI) 
     const { isOpen, onClose, onOpenChange } = disclosure;
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
+    const { update, data: session } = useSession();
+
     const onFileChange = (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files.length > 0) {
             const file = e.target.files[0];
@@ -29,8 +33,26 @@ export const ProfileChangeAvatarModal = (props: ProfileChangeAvatarModalPropsI) 
 
     const onSendFile = () => {
         if (selectedFile) {
-            console.log('selectedFile:', selectedFile);
-            onClose();
+            const formData = new FormData();
+            formData.append('avatar', selectedFile);
+            http.put(`/users/upload/${session?.user._id}`, formData)
+                .then((responseUser) => {
+                    const updateData = {
+                        ...session,
+                        user: { ...responseUser, token: session?.user.token },
+                    };
+
+                    update(updateData).then(() => {
+                        onClose();
+                        toast.success('Avatar change successfully');
+                    });
+                })
+                .catch(() => {
+                    toast.error("Can't upload this file, try to chane one");
+                })
+                .finally(() => {
+                    setSelectedFile(null);
+                });
         } else {
             toast.error('You should select file!');
         }

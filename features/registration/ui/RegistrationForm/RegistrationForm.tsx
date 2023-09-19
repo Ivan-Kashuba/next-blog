@@ -51,8 +51,6 @@ export const RegistrationForm = () => {
                         });
                 })
                 .catch((err) => {
-                    console.log('err?.data?.error[0]?.message:', err?.data?.error[0]?.message);
-
                     const errorText =
                         err?.data?.error[0]?.message ||
                         err?.data?.error.toString() ||

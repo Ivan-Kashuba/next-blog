@@ -7,6 +7,7 @@ import { ToastContainer } from 'react-toastify';
 import { ReactNode, useEffect } from 'react';
 import { Theme } from '@/shared/types/theme';
 import { useTheme } from '@/shared/lib/hooks/useTheme/useTheme';
+import TokenProvider from '@/app/global/providers/TokenProvider';
 
 interface ProvidersPropsI {
     children: ReactNode;
@@ -24,6 +25,7 @@ export function Providers(props: ProvidersPropsI) {
     return (
         <>
             <SessionProvider>
+                <TokenProvider />
                 <NextUIProvider>{children}</NextUIProvider>
             </SessionProvider>
             <ToastContainer autoClose={2200} theme={theme} />

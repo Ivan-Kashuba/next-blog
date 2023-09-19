@@ -14,6 +14,12 @@ const nextConfig = {
                 port: '',
                 pathname: '/**',
             },
+            {
+                protocol: 'http',
+                hostname: 'test-blog-api.ficuslife.com',
+                port: '',
+                pathname: '/**',
+            },
         ],
     },
 };

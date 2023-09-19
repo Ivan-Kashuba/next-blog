@@ -58,7 +58,13 @@ export const UserMenu = (props: UserMenuPropsI) => {
                     <Dropdown>
                         <DropdownTrigger>
                             <Avatar
-                                src={user?.image || user?.avatar || ''}
+                                src={
+                                    user?.image ||
+                                    `http://test-blog-api.ficuslife.com/${
+                                        session?.data?.user?.avatar || user?.avatar
+                                    }` ||
+                                    ''
+                                }
                                 className="cursor-pointer"
                             />
                         </DropdownTrigger>

@@ -1,13 +1,15 @@
-import React from 'react';
+'use client';
 import { Avatar, Button, useDisclosure } from '@nextui-org/react';
 import { useHover } from '@/shared/lib/hooks/useHover/useHover';
 import { ProfileChangeAvatarModal } from '@/entities/User/ui/Profile/ProfileChangeAvatarModal/ProfileChangeAvatarModal';
+import { useSession } from 'next-auth/react';
 
 interface ProfileHeaderUserImagePropsI {
     userPhoto?: string;
 }
 export const ProfileHeaderUserImage = (props: ProfileHeaderUserImagePropsI) => {
     const { userPhoto } = props;
+    const { data: session } = useSession();
     const { isHovered, eventHandlers } = useHover();
     const disclosure = useDisclosure();
 
@@ -20,7 +22,14 @@ export const ProfileHeaderUserImage = (props: ProfileHeaderUserImagePropsI) => {
                 {...eventHandlers}
             >
                 <>
-                    <Avatar src={userPhoto || ''} className="w-[100%] h-[100%]" />
+                    <Avatar
+                        src={
+                            `http://test-blog-api.ficuslife.com${session?.user.avatar}` ||
+                            `http://test-blog-api.ficuslife.com${userPhoto}` ||
+                            ''
+                        }
+                        className="w-[100%] h-[100%]"
+                    />
                     {isHovered && (
                         <>
                             <div className="w-[200px] h-[200px] z-10 rounded-[50%] bg-[rgba(59,67,76,0.9)] absolute" />
