@@ -3,6 +3,7 @@ import { Avatar, Button, useDisclosure } from '@nextui-org/react';
 import { useHover } from '@/shared/lib/hooks/useHover/useHover';
 import { ProfileChangeAvatarModal } from '@/entities/User/ui/Profile/ProfileChangeAvatarModal/ProfileChangeAvatarModal';
 import { useSession } from 'next-auth/react';
+import { useMemo } from 'react';
 
 interface ProfileHeaderUserImagePropsI {
     userPhoto?: string;
@@ -15,6 +16,18 @@ export const ProfileHeaderUserImage = (props: ProfileHeaderUserImagePropsI) => {
 
     const { onOpen } = disclosure;
 
+    const avatarImage = useMemo(() => {
+        if (session?.user.avatar) {
+            return `http://test-blog-api.ficuslife.com${session?.user.avatar}`;
+        }
+
+        if (userPhoto) {
+            return `http://test-blog-api.ficuslife.com${userPhoto}`;
+        }
+
+        return undefined;
+    }, [session?.user.avatar, userPhoto]);
+
     return (
         <>
             <div
@@ -22,14 +35,7 @@ export const ProfileHeaderUserImage = (props: ProfileHeaderUserImagePropsI) => {
                 {...eventHandlers}
             >
                 <>
-                    <Avatar
-                        src={
-                            `http://test-blog-api.ficuslife.com${session?.user.avatar}` ||
-                            `http://test-blog-api.ficuslife.com${userPhoto}` ||
-                            ''
-                        }
-                        className="w-[100%] h-[100%]"
-                    />
+                    <Avatar src={avatarImage} className="w-[100%] h-[100%]" />
                     {isHovered && (
                         <>
                             <div className="w-[200px] h-[200px] z-10 rounded-[50%] bg-[rgba(59,67,76,0.9)] absolute" />

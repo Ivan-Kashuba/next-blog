@@ -10,10 +10,10 @@ export const TokenProvider = () => {
     useEffect(() => {
         if (session?.user?.token) {
             setLocalStorageKey(STORAGE_KEY, session?.user.token);
+        } else {
+            setLocalStorageKey(STORAGE_KEY, '');
         }
     }, [session?.user.token]);
-
-    return <div></div>;
 };
 
 export default TokenProvider;

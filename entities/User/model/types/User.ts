@@ -9,3 +9,8 @@ export interface User {
     details?: string;
     dateCreated?: string;
 }
+
+export type ProfileChangeType = Pick<
+    User,
+    'name' | 'extra_details' | 'skills' | 'profession' | 'details'
+>;

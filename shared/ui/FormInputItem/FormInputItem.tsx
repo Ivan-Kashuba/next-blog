@@ -3,17 +3,19 @@ import { Input, Textarea } from '@nextui-org/react';
 import { useFormikContext } from 'formik';
 import { IRegistrationFormValues } from '@/features/registration/ui/RegistrationForm/RegistrationForm';
 import { EyeFilledIcon, EyeSlashFilledIcon } from '@nextui-org/shared-icons';
+import { InputProps } from '@nextui-org/react';
 
-export interface IRegistrationFormInputItem {
+export interface IRegistrationFormInputItem extends InputProps {
     label: string;
     name: keyof IRegistrationFormValues;
     type?: HTMLInputTypeAttribute;
     isTextArea?: boolean;
     isRequired?: boolean;
+    errorMessage?: string;
 }
 
 export const FormInputItem = (props: IRegistrationFormInputItem) => {
-    const { name, label, type, isTextArea, isRequired } = props;
+    const { name, label, type, isTextArea, isRequired, ...others } = props;
     const { values, handleChange, handleBlur } = useFormikContext<IRegistrationFormValues>();
     const [show, setShow] = useState(type !== 'password');
 
@@ -30,6 +32,7 @@ export const FormInputItem = (props: IRegistrationFormInputItem) => {
                     onChange={handleChange}
                     name={name}
                     value={values[name]}
+                    {...others}
                 />
             ) : (
                 <Input
@@ -59,6 +62,7 @@ export const FormInputItem = (props: IRegistrationFormInputItem) => {
                             </>
                         )
                     }
+                    {...others}
                 />
             )}
         </>

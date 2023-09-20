@@ -1,34 +1,57 @@
 'use client';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { User } from '@nextui-org/user';
-import { Button } from '@nextui-org/react';
+import { Button, useDisclosure } from '@nextui-org/react';
 import { UserSession } from '@/app/api/auth/[...nextauth]/next-auth';
 import { useSession } from 'next-auth/react';
+import { ProfileChangeDataModal } from '../ProfileChangeDataModal/ProfileChangeDataModal';
 
 interface ProfileHeaderPropsI {
-    user?: UserSession;
+    serverUser?: UserSession;
 }
 
 export const ProfileHeader = (props: ProfileHeaderPropsI) => {
-    const { user } = props;
+    const { serverUser } = props;
     const { data: session } = useSession();
-    const isGoogleUser = !user?.token;
+    const isGoogleUser = !serverUser?.token;
     const isPageEditable = !isGoogleUser;
+
+    const disclosure = useDisclosure();
+    const { onOpen } = disclosure;
+
+    const avatarImage = useMemo(() => {
+        if (serverUser?.image) {
+            return serverUser?.image;
+        }
+
+        if (session?.user.avatar) {
+            return `http://test-blog-api.ficuslife.com${session?.user.avatar}`;
+        }
+
+        if (serverUser?.avatar) {
+            return `http://test-blog-api.ficuslife.com${serverUser?.avatar}`;
+        }
+
+        return undefined;
+    }, [session?.user.avatar, serverUser?.avatar, serverUser?.image]);
 
     return (
         <div className="flex items-center justify-between w-[100%] ">
             <User
-                name={user?.name}
-                description={user?.email}
+                name={session?.user.name || serverUser?.name}
+                description={session?.user.email || serverUser?.email}
                 avatarProps={{
-                    src:
-                        user?.image ||
-                        `http://test-blog-api.ficuslife.com${
-                            session?.user?.avatar || user?.avatar
-                        }`,
+                    src: avatarImage,
                 }}
             />
-            {isPageEditable && <Button variant="ghost">Edit</Button>}
+            {isPageEditable && (
+                <>
+                    <Button variant="ghost" onClick={onOpen}>
+                        Edit
+                    </Button>
+                    <ProfileChangeDataModal disclosure={disclosure} />
+                </>
+            )}
         </div>
     );
 };

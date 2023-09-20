@@ -73,7 +73,7 @@ export const ProfileChangeAvatarModal = (props: ProfileChangeAvatarModalPropsI) 
                             <Button color="danger" variant="light" onPress={onClose}>
                                 Close
                             </Button>
-                            <Button color="success" onPress={onSendFile}>
+                            <Button color="primary" onPress={onSendFile}>
                                 Save
                             </Button>
                         </ModalFooter>

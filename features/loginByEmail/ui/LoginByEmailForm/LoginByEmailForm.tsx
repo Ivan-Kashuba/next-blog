@@ -6,6 +6,7 @@ import { Button, Input } from '@nextui-org/react';
 import { FormInputItem } from '@/shared/ui/FormInputItem/FormInputItem';
 import { signIn } from 'next-auth/react';
 import { toast } from 'react-toastify';
+import { loginByEmailValidationSchema } from '@/features/loginByEmail/model/validation/loginByEmailValidation';
 
 export type ILoginFormValues = {
     email: string;
@@ -20,6 +21,7 @@ export const LoginByEmailForm = () => {
             email: '',
             password: '',
         },
+        validationSchema: loginByEmailValidationSchema,
         onSubmit: async (values) => {
             const response = await signIn('credentials', {
                 email: values.email,
@@ -49,9 +51,24 @@ export const LoginByEmailForm = () => {
                     name="email"
                     value={formik.values.email}
                     label="Email"
+                    errorMessage={
+                        formik.touched.email && formik.errors.email
+                            ? formik.errors.email
+                            : undefined
+                    }
+                    role="presentation"
                 />
 
-                <FormInputItem name="password" type="password" label="Password" />
+                <FormInputItem
+                    errorMessage={
+                        formik.touched.password && formik.errors.password
+                            ? formik.errors.password
+                            : undefined
+                    }
+                    name="password"
+                    type="password"
+                    label="Password"
+                />
 
                 <Button
                     className="w-[100%]"

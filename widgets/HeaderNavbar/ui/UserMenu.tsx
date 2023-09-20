@@ -8,7 +8,7 @@ import {
     DropdownTrigger,
 } from '@nextui-org/react';
 import Link from 'next/link';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { signOut, useSession } from 'next-auth/react';
 import { UserSession } from '@/app/api/auth/[...nextauth]/next-auth';
@@ -25,9 +25,9 @@ export const UserMenu = (props: UserMenuPropsI) => {
     const { setTheme } = useTheme();
 
     const router = useRouter();
-    const session = useSession();
+    const { data: session } = useSession();
 
-    const isUserAuthorized = isAuthorizedOnServer || session?.data?.user;
+    const isUserAuthorized = isAuthorizedOnServer || session?.user;
 
     const onLogout = useCallback(() => {
         signOut({ callbackUrl: '/login' });
@@ -49,7 +49,23 @@ export const UserMenu = (props: UserMenuPropsI) => {
             document.cookie = `theme=${Theme.LIGHT}`;
             setTheme(Theme.LIGHT);
         }
-    }, []);
+    }, [setTheme]);
+
+    const avatarImage = useMemo(() => {
+        if (user?.image) {
+            return user?.image;
+        }
+
+        if (session?.user?.avatar) {
+            return `http://test-blog-api.ficuslife.com${session?.user?.avatar}`;
+        }
+
+        if (user?.avatar) {
+            return `http://test-blog-api.ficuslife.com${user?.avatar}`;
+        }
+
+        return undefined;
+    }, [session?.user?.avatar, user?.avatar, user?.image]);
 
     return (
         <div className="ml-auto">
@@ -57,16 +73,7 @@ export const UserMenu = (props: UserMenuPropsI) => {
                 {isUserAuthorized ? (
                     <Dropdown>
                         <DropdownTrigger>
-                            <Avatar
-                                src={
-                                    user?.image ||
-                                    `http://test-blog-api.ficuslife.com/${
-                                        session?.data?.user?.avatar || user?.avatar
-                                    }` ||
-                                    ''
-                                }
-                                className="cursor-pointer"
-                            />
+                            <Avatar src={avatarImage} className="cursor-pointer" />
                         </DropdownTrigger>
                         <DropdownMenu aria-label="Static Actions">
                             <DropdownItem key="profile" onClick={onNavigateToProfile}>

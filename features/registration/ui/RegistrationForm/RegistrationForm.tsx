@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@nextui-org/react';
 import { signIn } from 'next-auth/react';
 import { toast } from 'react-toastify';
+import { registrationValidationSchema } from '@/features/registration/model/validation/registrationValidation';
 
 export type IRegistrationFormValues = {
     email: string;
@@ -32,6 +33,7 @@ export const RegistrationForm = () => {
             profession: '',
             details: '',
         },
+        validationSchema: registrationValidationSchema,
         onSubmit: async (values) => {
             setIsSubmitting(true);
             http.post('http://test-blog-api.ficuslife.com/api/v1/users', values)
@@ -104,7 +106,17 @@ export const RegistrationForm = () => {
         <FormikProvider value={formik}>
             <Form className="flex flex-col gap-[30px] items-center justify-center w-[500px] m-auto">
                 {formDataToMap.map((formItem) => {
-                    return <FormInputItem key={formItem.name} {...formItem} />;
+                    return (
+                        <FormInputItem
+                            key={formItem.name}
+                            {...formItem}
+                            errorMessage={
+                                formik.touched[formItem.name] && formik.errors[formItem.name]
+                                    ? formik.errors[formItem.name]
+                                    : undefined
+                            }
+                        />
+                    );
                 })}
 
                 <Button variant="ghost" className="w-[100%]" isLoading={isSubmitting} type="submit">

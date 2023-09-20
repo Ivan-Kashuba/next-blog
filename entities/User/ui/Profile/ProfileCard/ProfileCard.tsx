@@ -5,23 +5,27 @@ import { Image } from '@nextui-org/react';
 import { Card, CardBody } from '@nextui-org/card';
 import DateHelper from '@/shared/lib/dateHelper/dateHelper';
 import { ProfileHeaderUserImage } from '@/entities/User/ui/Profile/ProfileHeaderUserImage/ProfileHeaderUserImage';
+import { useSession } from 'next-auth/react';
 
 interface ProfileCardPropsI {
-    user?: UserSession;
+    serverUser?: UserSession;
 }
 
 export const ProfileCard = (props: ProfileCardPropsI) => {
-    const { user } = props;
-    const isGoogleUser = !user?.token;
+    const { serverUser } = props;
+    const isGoogleUser = !serverUser?.token;
+    const { data: session } = useSession();
+
+    const clientUser = session?.user;
 
     return (
         <div>
-            <div className="mt-[20px] text-3xl text-center">{user?.name}</div>
+            <div className="mt-[20px] text-3xl text-center">{serverUser?.name}</div>
             {isGoogleUser ? (
                 <div className="flex gap-[30px] items-center">
                     <Image
                         className="rounded-[50%]"
-                        src={user?.image || ''}
+                        src={serverUser?.image || undefined}
                         width={300}
                         height={300}
                         alt={'Image'}
@@ -33,23 +37,39 @@ export const ProfileCard = (props: ProfileCardPropsI) => {
                 </div>
             ) : (
                 <>
-                    <ProfileHeaderUserImage userPhoto={user?.avatar} />
+                    <ProfileHeaderUserImage userPhoto={clientUser?.avatar || serverUser?.avatar} />
                     <div className="flex justify-between mt-[50px]">
                         <Card className="w-[45%]">
                             <CardBody>
-                                <p>Skills : {user?.skills || '-'}</p>
-                                <p>Details : {user?.details || '-'}</p>
-                                <p>Extra details : {user?.extra_details || '-'}</p>
+                                <p>
+                                    <span className="font-bold">Skills</span> :{' '}
+                                    {clientUser?.skills || serverUser?.skills || '-'}
+                                </p>
+                                <p>
+                                    <span className="font-bold">Details</span> :{' '}
+                                    {clientUser?.details || serverUser?.details || '-'}
+                                </p>
+                                <p>
+                                    <span className="font-bold">Extra details</span> :{' '}
+                                    {clientUser?.extra_details || serverUser?.extra_details || '-'}
+                                </p>
                             </CardBody>
                         </Card>
                         <Card className="w-[45%]">
                             <CardBody>
-                                <p>Profession : {user?.profession || '-'}</p>
-                                <p>Contacts : {user?.email || '-'}</p>
                                 <p>
-                                    Created account date :{' '}
-                                    {new DateHelper(user?.dateCreated).formatToPointDDMMYYYY() ||
-                                        '-'}
+                                    <span className="font-bold">Profession</span> :{' '}
+                                    {clientUser?.profession || serverUser?.profession || '-'}
+                                </p>
+                                <p>
+                                    <span className="font-bold">Contacts</span> :{' '}
+                                    {clientUser?.email || serverUser?.email || '-'}
+                                </p>
+                                <p>
+                                    <span className="font-bold">Created account date</span> :{' '}
+                                    {new DateHelper(
+                                        serverUser?.dateCreated,
+                                    ).formatToPointDDMMYYYY() || '-'}
                                 </p>
                             </CardBody>
                         </Card>

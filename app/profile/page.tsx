@@ -9,8 +9,8 @@ export default async function ProfilePage() {
 
     return (
         <div className="px-[10%]">
-            <ProfileHeader user={user} />
-            <ProfileCard user={user} />
+            <ProfileHeader serverUser={user} />
+            <ProfileCard serverUser={user} />
         </div>
     );
 }
