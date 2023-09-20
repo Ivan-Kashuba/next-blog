@@ -21,6 +21,7 @@ export const ProfileChangeAvatarModal = (props: ProfileChangeAvatarModalPropsI) 
 
     const { isOpen, onClose, onOpenChange } = disclosure;
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
 
     const { update, data: session } = useSession();
 
@@ -33,6 +34,7 @@ export const ProfileChangeAvatarModal = (props: ProfileChangeAvatarModalPropsI) 
 
     const onSendFile = () => {
         if (selectedFile) {
+            setIsLoading(true);
             const formData = new FormData();
             formData.append('avatar', selectedFile);
             http.put(`/users/upload/${session?.user._id}`, formData)
@@ -51,6 +53,7 @@ export const ProfileChangeAvatarModal = (props: ProfileChangeAvatarModalPropsI) 
                     toast.error("Can't upload this file, try to chane one");
                 })
                 .finally(() => {
+                    setIsLoading(false);
                     setSelectedFile(null);
                 });
         } else {
@@ -73,7 +76,7 @@ export const ProfileChangeAvatarModal = (props: ProfileChangeAvatarModalPropsI) 
                             <Button color="danger" variant="light" onPress={onClose}>
                                 Close
                             </Button>
-                            <Button color="primary" onPress={onSendFile}>
+                            <Button isLoading={isLoading} color="primary" onPress={onSendFile}>
                                 Save
                             </Button>
                         </ModalFooter>

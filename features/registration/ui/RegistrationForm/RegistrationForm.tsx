@@ -1,8 +1,8 @@
 'use client';
 import { Form, FormikProps, FormikProvider, useFormik } from 'formik';
 import http from '@/shared/lib/api/http';
-import { useMemo, useState } from 'react';
-import { IRegistrationFormInputItem, FormInputItem } from '@/shared/ui/FormInputItem/FormInputItem';
+import { useMemo } from 'react';
+import { FormInputItem, IRegistrationFormInputItem } from '@/shared/ui/FormInputItem/FormInputItem';
 import { useRouter } from 'next/navigation';
 import { Button } from '@nextui-org/react';
 import { signIn } from 'next-auth/react';
@@ -21,7 +21,6 @@ export type IRegistrationFormValues = {
 
 export const RegistrationForm = () => {
     const router = useRouter();
-    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const formik: FormikProps<IRegistrationFormValues> = useFormik<IRegistrationFormValues>({
         initialValues: {
@@ -34,8 +33,7 @@ export const RegistrationForm = () => {
             details: '',
         },
         validationSchema: registrationValidationSchema,
-        onSubmit: async (values) => {
-            setIsSubmitting(true);
+        onSubmit: (values, { setSubmitting }) => {
             http.post('http://test-blog-api.ficuslife.com/api/v1/users', values)
                 .then(() => {
                     signIn('credentials', {
@@ -61,7 +59,7 @@ export const RegistrationForm = () => {
                     toast.error(errorText);
                 })
                 .finally(() => {
-                    setIsSubmitting(false);
+                    setSubmitting(false);
                 });
         },
     });
@@ -119,7 +117,12 @@ export const RegistrationForm = () => {
                     );
                 })}
 
-                <Button variant="ghost" className="w-[100%]" isLoading={isSubmitting} type="submit">
+                <Button
+                    variant="ghost"
+                    className="w-[100%]"
+                    isLoading={formik.isSubmitting}
+                    type="submit"
+                >
                     Create account
                 </Button>
             </Form>

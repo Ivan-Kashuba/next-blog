@@ -22,21 +22,22 @@ export const LoginByEmailForm = () => {
             password: '',
         },
         validationSchema: loginByEmailValidationSchema,
-        onSubmit: async (values) => {
-            const response = await signIn('credentials', {
+        onSubmit: (values, { setSubmitting }) => {
+            signIn('credentials', {
                 email: values.email,
                 password: values.password,
                 redirect: false,
-            });
-
-            if (response && !response.error) {
-                toast.success('Welcome back!');
-                router.push('/profile');
-            } else {
-                toast.error('Something went wrong');
-            }
-
-            formik.setSubmitting(false);
+            })
+                .then(() => {
+                    toast.success('Welcome back!');
+                    router.push('/profile');
+                })
+                .catch(() => {
+                    toast.error('Something went wrong');
+                })
+                .finally(() => {
+                    setSubmitting(false);
+                });
         },
     });
 

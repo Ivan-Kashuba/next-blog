@@ -14,6 +14,8 @@ export const TokenProvider = () => {
             setLocalStorageKey(STORAGE_KEY, '');
         }
     }, [session?.user.token]);
+
+    return <></>;
 };
 
 export default TokenProvider;

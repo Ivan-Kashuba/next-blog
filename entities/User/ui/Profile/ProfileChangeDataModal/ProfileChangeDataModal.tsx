@@ -1,7 +1,6 @@
 import { Disclosure } from '@/shared/types/disclosure';
 import {
     Button,
-    Input,
     Modal,
     ModalBody,
     ModalContent,
@@ -33,7 +32,7 @@ export const ProfileChangeDataModal = (props: ProfileChangeDataModalPropsI) => {
             extra_details: '',
             details: '',
         },
-        onSubmit: async (values) => {
+        onSubmit: (values) => {
             http.patch(`users/${session?.user._id}`, values)
                 .then((responseUser) => {
                     const updateData = {

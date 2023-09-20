@@ -10,13 +10,9 @@ interface IPostProps {
 }
 
 const Posts = ({ defaultPosts }: IPostProps) => {
-    const { data: posts, isLoading } = useSWR<Post[]>(
-        'https://jsonplaceholder.typicode.com/posts',
-        fetcher,
-        {
-            fallbackData: defaultPosts,
-        },
-    );
+    const { data: posts } = useSWR<Post[]>('https://jsonplaceholder.typicode.com/posts', fetcher, {
+        fallbackData: defaultPosts,
+    });
 
     return (
         <ul>

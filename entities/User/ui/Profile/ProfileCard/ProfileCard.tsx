@@ -20,7 +20,9 @@ export const ProfileCard = (props: ProfileCardPropsI) => {
 
     return (
         <div>
-            <div className="mt-[20px] text-3xl text-center">{serverUser?.name}</div>
+            <div className="mt-[20px] text-3xl text-center">
+                {clientUser?.name || serverUser?.name}
+            </div>
             {isGoogleUser ? (
                 <div className="flex gap-[30px] items-center">
                     <Image
