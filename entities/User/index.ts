@@ -1,3 +1,5 @@
-export { ProfileHeader } from '@/entities/User/ui/Profile/ProfileCardHeader/ProfileHeader';
-export type { User } from './model/types/User';
-export { ProfileCard } from './ui/Profile/ProfileCard/ProfileCard';
+export { ProfileHeader } from './ui/ProfileCardHeader/ProfileHeader';
+export type { User, UsersOnServerResponseT } from './model/types/User';
+export { ProfileCard } from './ui/ProfileCard/ProfileCard';
+export { UsersList } from '@/entities/User/ui/UsersList/UsersList';
+export { getUsersOnServer } from './model/service/getUsersOnServer/getUsersOnServer';

@@ -1,7 +1,7 @@
 'use client';
 import { useEffect } from 'react';
 import { setLocalStorageKey } from '@/shared/lib/localStorage/setLocalStorageKey';
-import { STORAGE_KEY } from '@/shared/lib/api/http';
+import http, { STORAGE_KEY } from '@/shared/lib/api/http';
 import { useSession } from 'next-auth/react';
 
 export const TokenProvider = () => {
@@ -9,7 +9,7 @@ export const TokenProvider = () => {
 
     useEffect(() => {
         if (session?.user?.token) {
-            setLocalStorageKey(STORAGE_KEY, session?.user.token);
+            http.setAuthHeader(session?.user.token);
         } else {
             setLocalStorageKey(STORAGE_KEY, '');
         }

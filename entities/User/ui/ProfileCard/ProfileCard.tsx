@@ -4,7 +4,7 @@ import { UserSession } from '@/app/api/auth/[...nextauth]/next-auth';
 import { Image } from '@nextui-org/react';
 import { Card, CardBody } from '@nextui-org/card';
 import DateHelper from '@/shared/lib/dateHelper/dateHelper';
-import { ProfileHeaderUserImage } from '@/entities/User/ui/Profile/ProfileHeaderUserImage/ProfileHeaderUserImage';
+import { ProfileHeaderUserImage } from '@/entities/User/ui/ProfileHeaderUserImage/ProfileHeaderUserImage';
 import { useSession } from 'next-auth/react';
 
 interface ProfileCardPropsI {

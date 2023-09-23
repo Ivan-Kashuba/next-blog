@@ -7,10 +7,10 @@ import {
     ModalFooter,
     ModalHeader,
 } from '@nextui-org/react';
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { Form, FormikProps, FormikProvider, useFormik } from 'formik';
 import { toast } from 'react-toastify';
-import { ProfileChangeType } from '../../../model/types/User';
+import { ProfileChangeType } from '../../model/types/User';
 import http from '@/shared/lib/api/http';
 import { useSession } from 'next-auth/react';
 import { FormInputItem, IRegistrationFormInputItem } from '@/shared/ui/FormInputItem/FormInputItem';
@@ -22,15 +22,17 @@ interface ProfileChangeDataModalPropsI {
 export const ProfileChangeDataModal = (props: ProfileChangeDataModalPropsI) => {
     const { disclosure } = props;
     const { data: session, update } = useSession();
+    const user = session?.user;
+
     const { isOpen, onClose, onOpenChange } = disclosure;
 
     const formik: FormikProps<ProfileChangeType> = useFormik<ProfileChangeType>({
         initialValues: {
-            name: '',
-            skills: '',
-            profession: '',
-            extra_details: '',
-            details: '',
+            name: user?.name || '',
+            skills: user?.skills || '',
+            profession: user?.profession || '',
+            extra_details: user?.extra_details || '',
+            details: user?.details || '',
         },
         onSubmit: (values) => {
             http.patch(`users/${session?.user._id}`, values)
@@ -54,6 +56,11 @@ export const ProfileChangeDataModal = (props: ProfileChangeDataModalPropsI) => {
         },
     });
 
+    const onModalClose = useCallback(() => {
+        onClose();
+        formik.resetForm();
+    }, [formik, onClose]);
+
     const formDataToMap: IRegistrationFormInputItem[] = useMemo(() => {
         return [
             { name: 'name', label: 'Name' },
@@ -65,7 +72,12 @@ export const ProfileChangeDataModal = (props: ProfileChangeDataModalPropsI) => {
     }, []);
 
     return (
-        <Modal isOpen={isOpen} onOpenChange={onOpenChange} isDismissable={false}>
+        <Modal
+            isOpen={isOpen}
+            onOpenChange={onOpenChange}
+            onClose={onModalClose}
+            isDismissable={false}
+        >
             <FormikProvider value={formik}>
                 <Form>
                     <ModalContent>

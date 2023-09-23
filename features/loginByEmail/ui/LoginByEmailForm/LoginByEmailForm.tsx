@@ -29,8 +29,8 @@ export const LoginByEmailForm = () => {
                 redirect: false,
             })
                 .then(() => {
-                    toast.success('Welcome back!');
                     router.push('/profile');
+                    toast.success('Welcome back!');
                 })
                 .catch(() => {
                     toast.error('Something went wrong');
