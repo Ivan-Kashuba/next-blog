@@ -10,7 +10,7 @@ import {
 import React, { useCallback, useMemo } from 'react';
 import { Form, FormikProps, FormikProvider, useFormik } from 'formik';
 import { toast } from 'react-toastify';
-import { ProfileChangeType } from '../../model/types/User';
+import { ProfileChangeType } from '../../../../entities/User/model/types/User';
 import http from '@/shared/lib/api/http';
 import { useSession } from 'next-auth/react';
 import { FormInputItem, IRegistrationFormInputItem } from '@/shared/ui/FormInputItem/FormInputItem';
@@ -34,6 +34,7 @@ export const ProfileChangeDataModal = (props: ProfileChangeDataModalPropsI) => {
             extra_details: user?.extra_details || '',
             details: user?.details || '',
         },
+        enableReinitialize: true,
         onSubmit: (values) => {
             http.patch(`users/${session?.user._id}`, values)
                 .then((responseUser) => {

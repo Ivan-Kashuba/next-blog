@@ -4,7 +4,7 @@ import { User } from '@nextui-org/user';
 import { Button, useDisclosure } from '@nextui-org/react';
 import { UserSession } from '@/app/api/auth/[...nextauth]/next-auth';
 import { useSession } from 'next-auth/react';
-import { ProfileChangeDataModal } from '../ProfileChangeDataModal/ProfileChangeDataModal';
+import { ProfileChangeDataModal } from '@/features/profileChangeDataModal';
 
 interface ProfileHeaderPropsI {
     serverUser?: UserSession;

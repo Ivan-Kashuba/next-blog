@@ -1,7 +1,7 @@
 import React from 'react';
 import { getServerSession } from 'next-auth';
 import { authNextConfig } from '@/app/global/config/auth/auth';
-import { ProfileCard, ProfileHeader } from '@/entities/User';
+import { Profile } from '@/features/userProfile';
 
 export default async function ProfilePage() {
     const session = await getServerSession(authNextConfig);
@@ -9,8 +9,7 @@ export default async function ProfilePage() {
 
     return (
         <div className="px-[10%]">
-            <ProfileHeader serverUser={user} />
-            <ProfileCard serverUser={user} />
+            <Profile serverUser={user} />
         </div>
     );
 }

@@ -1,9 +1,9 @@
 'use client';
-import { UserListItem } from '@/entities/User/ui/UserListItem/UserListItem';
+import { UserListItem } from '../UserListItem/UserListItem';
 import { Pagination } from '@nextui-org/react';
 import usePagination from '@/shared/lib/hooks/usePagination/usePagination';
 import { UsersOnServerResponseT } from '../../model/types/User';
-import { useUsers } from '@/entities/User/model/api/useUsers/useUser';
+import { useUsers } from '../../model/api/useUsers/useUser';
 
 interface UserListPropsT {
     defaultUsersResponse: UsersOnServerResponseT;

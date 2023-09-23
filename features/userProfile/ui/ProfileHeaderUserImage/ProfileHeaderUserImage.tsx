@@ -1,9 +1,10 @@
 'use client';
 import { Avatar, Button, useDisclosure } from '@nextui-org/react';
 import { useHover } from '@/shared/lib/hooks/useHover/useHover';
-import { ProfileChangeAvatarModal } from '@/entities/User/ui/ProfileChangeAvatarModal/ProfileChangeAvatarModal';
+
 import { useSession } from 'next-auth/react';
 import { useMemo } from 'react';
+import { ProfileChangeAvatarModal } from '@/features/profileChangeAvatarModal';
 
 interface ProfileHeaderUserImagePropsI {
     userPhoto?: string;
