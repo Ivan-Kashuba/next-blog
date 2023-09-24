@@ -31,11 +31,15 @@ export const UserMenu = (props: UserMenuPropsI) => {
 
     const onLogout = useCallback(() => {
         signOut({ callbackUrl: '/login' });
-    }, [router]);
+    }, []);
 
     const onNavigateToProfile = useCallback(() => {
-        router.push('/profile');
-    }, [router]);
+        if (session?.user._id) {
+            router.push(`/profile/${session?.user._id}`);
+        } else {
+            router.push(`/profile`);
+        }
+    }, [router, session?.user._id]);
 
     const toggleColorMode = useCallback(() => {
         const root = document.getElementsByTagName('html')[0];

@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { UserSession } from '@/app/api/auth/[...nextauth]/next-auth';
 import { Image } from '@nextui-org/react';
 import { Card, CardBody } from '@nextui-org/card';
@@ -9,25 +9,32 @@ import { ProfileHeaderUserImage } from '../ProfileHeaderUserImage/ProfileHeaderU
 
 interface ProfileCardPropsI {
     serverUser?: UserSession;
+    isOwnProfile?: boolean;
 }
 
 export const ProfileCard = (props: ProfileCardPropsI) => {
-    const { serverUser } = props;
-    const isGoogleUser = !serverUser?.token;
+    const { serverUser, isOwnProfile } = props;
+    const isGoogleUser = !serverUser?.token && isOwnProfile;
     const { data: session } = useSession();
 
-    const clientUser = session?.user;
+    const currentUser = useMemo(() => {
+        if (isOwnProfile) {
+            return session?.user || serverUser;
+        }
+
+        if (!isOwnProfile) {
+            return serverUser;
+        }
+    }, [isOwnProfile, serverUser, session?.user]);
 
     return (
         <div>
-            <div className="mt-[20px] text-3xl text-center">
-                {clientUser?.name || serverUser?.name}
-            </div>
+            <div className="mt-[20px] text-3xl text-center">{currentUser?.name}</div>
             {isGoogleUser ? (
                 <div className="flex gap-[30px] items-center">
                     <Image
                         className="rounded-[50%]"
-                        src={serverUser?.image || undefined}
+                        src={currentUser?.image || undefined}
                         width={300}
                         height={300}
                         alt={'Image'}
@@ -39,21 +46,24 @@ export const ProfileCard = (props: ProfileCardPropsI) => {
                 </div>
             ) : (
                 <>
-                    <ProfileHeaderUserImage userPhoto={clientUser?.avatar || serverUser?.avatar} />
+                    <ProfileHeaderUserImage
+                        userPhoto={currentUser?.avatar}
+                        isOwnProfile={isOwnProfile}
+                    />
                     <div className="flex justify-between mt-[50px]">
                         <Card className="w-[45%]">
                             <CardBody>
                                 <p>
                                     <span className="font-bold">Skills</span> :{' '}
-                                    {clientUser?.skills || serverUser?.skills || '-'}
+                                    {currentUser?.skills || '-'}
                                 </p>
                                 <p>
                                     <span className="font-bold">Details</span> :{' '}
-                                    {clientUser?.details || serverUser?.details || '-'}
+                                    {currentUser?.details || '-'}
                                 </p>
                                 <p>
                                     <span className="font-bold">Extra details</span> :{' '}
-                                    {clientUser?.extra_details || serverUser?.extra_details || '-'}
+                                    {currentUser?.extra_details || '-'}
                                 </p>
                             </CardBody>
                         </Card>
@@ -61,17 +71,19 @@ export const ProfileCard = (props: ProfileCardPropsI) => {
                             <CardBody>
                                 <p>
                                     <span className="font-bold">Profession</span> :{' '}
-                                    {clientUser?.profession || serverUser?.profession || '-'}
+                                    {currentUser?.profession || '-'}
                                 </p>
                                 <p>
                                     <span className="font-bold">Contacts</span> :{' '}
-                                    {clientUser?.email || serverUser?.email || '-'}
+                                    {currentUser?.email || '-'}
                                 </p>
                                 <p>
                                     <span className="font-bold">Created account date</span> :{' '}
-                                    {new DateHelper(
-                                        serverUser?.dateCreated,
-                                    ).formatToPointDDMMYYYY() || '-'}
+                                    {currentUser?.dateCreated
+                                        ? new DateHelper(
+                                              currentUser?.dateCreated,
+                                          ).formatToPointDDMMYYYY()
+                                        : '-'}
                                 </p>
                             </CardBody>
                         </Card>

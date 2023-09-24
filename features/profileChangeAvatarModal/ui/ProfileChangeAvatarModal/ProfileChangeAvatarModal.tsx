@@ -50,7 +50,7 @@ export const ProfileChangeAvatarModal = (props: ProfileChangeAvatarModalPropsI) 
                     });
                 })
                 .catch(() => {
-                    toast.error("Can't upload this file, try to chane one");
+                    toast.error("Can't upload this file, try to change one");
                 })
                 .finally(() => {
                     setIsLoading(false);

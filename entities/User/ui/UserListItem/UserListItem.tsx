@@ -54,7 +54,7 @@ export const UserListItem = (props: UserListItemPropT) => {
             </CardBody>
             <Divider />
             <CardFooter>
-                <Link href={`/users/${user._id}`}>See full profile</Link>
+                <Link href={`/profile/${user._id}`}>See full profile</Link>
             </CardFooter>
         </Card>
     );

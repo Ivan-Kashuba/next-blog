@@ -8,9 +8,10 @@ import { ProfileChangeAvatarModal } from '@/features/profileChangeAvatarModal';
 
 interface ProfileHeaderUserImagePropsI {
     userPhoto?: string;
+    isOwnProfile?: boolean;
 }
 export const ProfileHeaderUserImage = (props: ProfileHeaderUserImagePropsI) => {
-    const { userPhoto } = props;
+    const { userPhoto, isOwnProfile } = props;
     const { data: session } = useSession();
     const { isHovered, eventHandlers } = useHover();
     const disclosure = useDisclosure();
@@ -18,10 +19,6 @@ export const ProfileHeaderUserImage = (props: ProfileHeaderUserImagePropsI) => {
     const { onOpen } = disclosure;
 
     const avatarImage = useMemo(() => {
-        if (session?.user.avatar) {
-            return `http://test-blog-api.ficuslife.com${session?.user.avatar}`;
-        }
-
         if (userPhoto) {
             return `http://test-blog-api.ficuslife.com${userPhoto}`;
         }
@@ -37,7 +34,7 @@ export const ProfileHeaderUserImage = (props: ProfileHeaderUserImagePropsI) => {
             >
                 <>
                     <Avatar src={avatarImage} className="w-[100%] h-[100%]" />
-                    {isHovered && (
+                    {isHovered && isOwnProfile && (
                         <>
                             <div className="w-[200px] h-[200px] z-10 rounded-[50%] bg-[rgba(59,67,76,0.9)] absolute" />
                             <Button

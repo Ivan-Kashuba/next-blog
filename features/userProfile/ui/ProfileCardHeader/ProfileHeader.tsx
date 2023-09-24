@@ -8,38 +8,46 @@ import { ProfileChangeDataModal } from '@/features/profileChangeDataModal';
 
 interface ProfileHeaderPropsI {
     serverUser?: UserSession;
+    isOwnProfile?: boolean;
 }
 
 export const ProfileHeader = (props: ProfileHeaderPropsI) => {
-    const { serverUser } = props;
+    const { serverUser, isOwnProfile } = props;
+
     const { data: session } = useSession();
     const isGoogleUser = !serverUser?.token;
-    const isPageEditable = !isGoogleUser;
+    const isPageEditable = !isGoogleUser && isOwnProfile;
 
     const disclosure = useDisclosure();
     const { onOpen } = disclosure;
 
+    const currentUser = useMemo(() => {
+        if (isOwnProfile) {
+            return session?.user || serverUser;
+        }
+
+        if (!isOwnProfile) {
+            return serverUser;
+        }
+    }, [isOwnProfile, serverUser, session?.user]);
+
     const avatarImage = useMemo(() => {
-        if (serverUser?.image) {
+        if (currentUser?.image) {
             return serverUser?.image;
         }
 
-        if (session?.user.avatar) {
-            return `http://test-blog-api.ficuslife.com${session?.user.avatar}`;
-        }
-
-        if (serverUser?.avatar) {
-            return `http://test-blog-api.ficuslife.com${serverUser?.avatar}`;
+        if (currentUser?.avatar) {
+            return `http://test-blog-api.ficuslife.com${currentUser.avatar}`;
         }
 
         return undefined;
-    }, [session?.user.avatar, serverUser?.avatar, serverUser?.image]);
+    }, [currentUser, serverUser?.image]);
 
     return (
         <div className="flex items-center justify-between w-[100%] ">
             <User
-                name={session?.user.name || serverUser?.name}
-                description={session?.user.email || serverUser?.email}
+                name={currentUser?.name}
+                description={currentUser?.email}
                 avatarProps={{
                     src: avatarImage,
                 }}

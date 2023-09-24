@@ -1,15 +1,14 @@
 import React from 'react';
+import { Profile } from '@/features/userProfile';
 import { getServerSession } from 'next-auth';
 import { authNextConfig } from '@/app/global/config/auth/auth';
-import { Profile } from '@/features/userProfile';
 
-export default async function ProfilePage() {
+export default async function GoogleProfilePage() {
     const session = await getServerSession(authNextConfig);
-    const user = session?.user;
 
     return (
-        <div className="px-[10%]">
-            <Profile serverUser={user} />
+        <div>
+            <Profile serverUser={session?.user} isOwnProfile={true} />
         </div>
     );
 }

@@ -5,13 +5,14 @@ import { UserSession } from '@/app/api/auth/[...nextauth]/next-auth';
 
 interface ProfilePropsT {
     serverUser?: UserSession;
+    isOwnProfile?: boolean;
 }
 
-export const Profile = ({ serverUser }: ProfilePropsT) => {
+export const Profile = ({ serverUser, isOwnProfile }: ProfilePropsT) => {
     return (
         <>
-            <ProfileHeader serverUser={serverUser} />
-            <ProfileCard serverUser={serverUser} />
+            <ProfileHeader serverUser={serverUser} isOwnProfile={isOwnProfile} />
+            <ProfileCard serverUser={serverUser} isOwnProfile={isOwnProfile} />
         </>
     );
 };
