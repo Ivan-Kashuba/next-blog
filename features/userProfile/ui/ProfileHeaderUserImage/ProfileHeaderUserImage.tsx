@@ -12,7 +12,6 @@ interface ProfileHeaderUserImagePropsI {
 }
 export const ProfileHeaderUserImage = (props: ProfileHeaderUserImagePropsI) => {
     const { userPhoto, isOwnProfile } = props;
-    const { data: session } = useSession();
     const { isHovered, eventHandlers } = useHover();
     const disclosure = useDisclosure();
 
@@ -24,7 +23,7 @@ export const ProfileHeaderUserImage = (props: ProfileHeaderUserImagePropsI) => {
         }
 
         return undefined;
-    }, [session?.user.avatar, userPhoto]);
+    }, [userPhoto]);
 
     return (
         <>

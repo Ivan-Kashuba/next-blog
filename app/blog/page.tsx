@@ -1,4 +1,4 @@
-import Posts from '@/entities/Post/Posts';
+import Posts from '@/entities/Post/ui/Posts';
 
 export interface Post {
     userId: number;

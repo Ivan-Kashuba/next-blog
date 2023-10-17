@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getToken } from 'next-auth/jwt';
 
 const FORBIDDEN_FOR_AUTHENTICATED_USERS = ['/login', '/register'];
-const AUTHENTICATED_ONLY_PATHS = ['/profile'];
+const AUTHENTICATED_ONLY_PATHS = ['/profile', '/posts', '/users'];
 
 export async function middleware(request: NextRequest) {
     const token = await getToken({ req: request });

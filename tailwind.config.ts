@@ -13,6 +13,12 @@ const config: Config = {
         './node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}',
     ],
     theme: {
+        fontSize: {
+            h3: ['16px', '21px'],
+            h2: ['18px', '26.3px'],
+            h1: ['24px', '31.2px'],
+            small: ['11px', '15,4'],
+        },
         extend: {
             backgroundImage: {
                 'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',

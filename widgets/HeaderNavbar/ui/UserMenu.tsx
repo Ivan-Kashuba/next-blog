@@ -6,6 +6,7 @@ import {
     DropdownItem,
     DropdownMenu,
     DropdownTrigger,
+    useDisclosure,
 } from '@nextui-org/react';
 import Link from 'next/link';
 import { useCallback, useMemo } from 'react';
@@ -14,6 +15,7 @@ import { signOut, useSession } from 'next-auth/react';
 import { UserSession } from '@/app/api/auth/[...nextauth]/next-auth';
 import { Theme } from '@/shared/types/theme';
 import { useTheme } from '@/shared/lib/hooks/useTheme/useTheme';
+import { DeleteAccountModal } from '@/features/deleteAccount';
 
 interface UserMenuPropsI {
     user?: UserSession;
@@ -23,6 +25,8 @@ interface UserMenuPropsI {
 export const UserMenu = (props: UserMenuPropsI) => {
     const { isAuthorizedOnServer, user } = props;
     const { setTheme } = useTheme();
+    const disclosure = useDisclosure();
+    const { onOpen } = disclosure;
 
     const router = useRouter();
     const { data: session } = useSession();
@@ -55,6 +59,10 @@ export const UserMenu = (props: UserMenuPropsI) => {
         }
     }, [setTheme]);
 
+    const onOpenDeleteAccountModal = useCallback(() => {
+        onOpen();
+    }, [onOpen]);
+
     const avatarImage = useMemo(() => {
         if (user?.image) {
             return user?.image;
@@ -75,31 +83,42 @@ export const UserMenu = (props: UserMenuPropsI) => {
         <div className="ml-auto">
             <>
                 {isUserAuthorized ? (
-                    <Dropdown>
-                        <DropdownTrigger>
-                            <Avatar src={avatarImage} className="cursor-pointer" />
-                        </DropdownTrigger>
-                        <DropdownMenu aria-label="Static Actions">
-                            <DropdownItem key="profile" onClick={onNavigateToProfile}>
-                                Profile
-                            </DropdownItem>
-                            <DropdownItem key="theme" onClick={toggleColorMode}>
-                                Change color theme
-                            </DropdownItem>
-                            <DropdownItem
-                                key="logout"
-                                onClick={onLogout}
-                                className="text-danger"
-                                color="danger"
-                            >
-                                Logout
-                            </DropdownItem>
-                        </DropdownMenu>
-                    </Dropdown>
+                    <>
+                        <Dropdown>
+                            <DropdownTrigger>
+                                <Avatar src={avatarImage} className="cursor-pointer" />
+                            </DropdownTrigger>
+                            <DropdownMenu aria-label="Static Actions">
+                                <DropdownItem key="profile" onClick={onNavigateToProfile}>
+                                    Profile
+                                </DropdownItem>
+                                <DropdownItem key="theme" onClick={toggleColorMode}>
+                                    Change color theme
+                                </DropdownItem>
+                                <DropdownItem
+                                    key="deleteAccount"
+                                    onClick={onOpen}
+                                    className="text-danger"
+                                    color="danger"
+                                >
+                                    Delete account
+                                </DropdownItem>
+                                <DropdownItem
+                                    key="logout"
+                                    onClick={onLogout}
+                                    className="text-danger"
+                                    color="danger"
+                                >
+                                    Logout
+                                </DropdownItem>
+                            </DropdownMenu>
+                        </Dropdown>
+                        <DeleteAccountModal disclosure={disclosure} />
+                    </>
                 ) : (
                     <div className="flex gap-[30px]">
                         <Link href={'/login'}>
-                            <Button color="secondary" variant="ghost">
+                            <Button className="" color="secondary" variant="ghost">
                                 Login
                             </Button>
                         </Link>

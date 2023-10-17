@@ -1,4 +1,5 @@
 import './global/style/globals.css';
+import 'react-loading-skeleton/dist/skeleton.css';
 import type { Metadata } from 'next';
 import { Providers } from '@/app/global/providers/providers';
 import { Footer } from '@/app/global/ui/Footer';

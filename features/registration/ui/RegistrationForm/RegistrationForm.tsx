@@ -42,12 +42,12 @@ export const RegistrationForm = () => {
                         redirect: false,
                     })
                         .then(() => {
-                            toast.success('Welcome!');
                             router.push('/profile');
+                            toast.success('Welcome!');
                         })
                         .catch(() => {
-                            toast.error('Here');
                             router.push('/login');
+                            toast.error('Something went wrong');
                         });
                 })
                 .catch((err) => {
