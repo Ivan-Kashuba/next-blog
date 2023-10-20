@@ -1,15 +1,14 @@
-'use client';
 import { ProductList } from '@/entities/Product';
 import { ChangeElementsSize } from '@/features/changeNumberOfElementsOnPage';
-import { useState } from 'react';
+import { getInitialProductsList } from '@/entities/Product/service/getInitialProductsList/getInitialProductsList';
 
-export default function ShopPage() {
-    const [pageLimit, setLimitPage] = useState(6);
+export default async function ShopPage() {
+    const initialProducts = await getInitialProductsList();
 
     return (
-        <div>
-            <ChangeElementsSize setLimitNumber={setLimitPage} limitNumber={pageLimit} />
-            <ProductList pageSize={pageLimit} />
-        </div>
+        <>
+            <ChangeElementsSize />
+            <ProductList initialProducts={initialProducts} />
+        </>
     );
 }

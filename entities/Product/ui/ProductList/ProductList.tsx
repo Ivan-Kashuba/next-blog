@@ -2,15 +2,20 @@
 import { ProductItem } from '../ProductItem/ProductItem';
 import { ProductListLoader } from '../ProductListLoader/ProductListLoader';
 import { useProductLists } from '../../api/useProductLists/useProductLists';
+import { useChangeNumberOfElements } from '@/features/changeNumberOfElementsOnPage';
+import { ProductI } from '../../model/types/product';
+import { useInitialLoading } from '@/shared/lib/hooks/useInitialLoading/useInitialLoading';
 
 interface ProductListPropsI {
-    pageSize: number;
+    initialProducts: ProductI[];
 }
 
-export const ProductList = ({ pageSize }: ProductListPropsI) => {
-    const { data, isLoading } = useProductLists(pageSize);
+export const ProductList = ({ initialProducts }: ProductListPropsI) => {
+    const { limitNumber } = useChangeNumberOfElements();
+    const { data, isLoading } = useProductLists(limitNumber, initialProducts);
+    const { isFirstLoadingDone } = useInitialLoading(isLoading);
 
-    if (isLoading) {
+    if (isLoading && isFirstLoadingDone) {
         return <ProductListLoader />;
     }
 

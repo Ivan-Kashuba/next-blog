@@ -1,16 +1,12 @@
+'use client';
 import { Select, SelectItem } from '@nextui-org/react';
-
-interface ChangeElementsSizePropsI {
-    limitNumber: number;
-    setLimitNumber: (num: number) => void;
-}
+import { useChangeNumberOfElements } from '@/features/changeNumberOfElementsOnPage';
 
 const selectOptions = [6, 10, 15, 20];
 
-export const ChangeElementsSize = ({
-    limitNumber = 6,
-    setLimitNumber,
-}: ChangeElementsSizePropsI) => {
+export const ChangeElementsSize = () => {
+    const { limitNumber, setLimitNumber } = useChangeNumberOfElements();
+
     const onSelectChange = (e: any) => {
         setLimitNumber(e.target.value);
     };

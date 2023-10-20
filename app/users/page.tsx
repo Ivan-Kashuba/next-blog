@@ -12,7 +12,7 @@ export default async function UsersPage({ searchParams }: UsersPagePropsT) {
 
     return (
         <div>
-            <h1 className="mb-[40px] pl-[40px] text-3xl font-bold">Users</h1>
+            <h1 className="mb-[40px] pl-[40px] text-h1 text-center font-bold">Users</h1>
             <UsersList defaultUsersResponse={usersResponse} />
         </div>
     );

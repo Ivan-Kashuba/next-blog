@@ -8,6 +8,7 @@ import { ReactNode, useEffect } from 'react';
 import { Theme } from '@/shared/types/theme';
 import { useTheme } from '@/shared/lib/hooks/useTheme/useTheme';
 import TokenProvider from '@/app/global/providers/TokenProvider';
+import { SkeletonProvider } from '@/app/global/providers/SkeletonProvider';
 
 interface ProvidersPropsI {
     children: ReactNode;
@@ -26,7 +27,9 @@ export function Providers(props: ProvidersPropsI) {
         <>
             <SessionProvider>
                 <TokenProvider />
-                <NextUIProvider>{children}</NextUIProvider>
+                <SkeletonProvider theme={initialTheme || (theme as Theme)}>
+                    <NextUIProvider>{children}</NextUIProvider>
+                </SkeletonProvider>
             </SessionProvider>
             <ToastContainer autoClose={2200} theme={theme} />
             <ProgressBar height="6px" color="#a29999" shallowRouting />

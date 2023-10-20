@@ -9,6 +9,7 @@ const navItems = [
     { label: 'About', href: '/about' },
     { label: 'Users', href: '/users' },
     { label: 'Popular items', href: '/shop' },
+    { label: 'Investment', href: '/investment' },
 ];
 
 export const HeaderNavbar = async () => {
