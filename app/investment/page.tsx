@@ -2,6 +2,7 @@
 import {
     Image,
     Input,
+    Spinner,
     Table,
     TableBody,
     TableCell,
@@ -12,19 +13,20 @@ import {
 import { SearchIcon } from '@nextui-org/shared-icons';
 import { ChangeEvent, useState } from 'react';
 import useSWR from 'swr';
-import { ProductI } from '@/entities/Product';
 import axios from 'axios';
-import { Company } from '@/entities/Company/model/types/company';
 import Loader from '@/app/loading';
 import { Card } from '@nextui-org/card';
 import { useDebounce } from '@/shared/lib/hooks/useDebounce/useDebounce';
 import IbmLogo from '@/shared/assets/images/IBM-logo.png';
+import { Company, CompanyShortDescription } from '@/entities/Company';
+import { useFocused } from '@/shared/lib/hooks/useFocused/useFocused';
 
 export default function InvestmentPage() {
     const [inputText, setInputText] = useState('');
     const [searchText, setSearchText] = useState('');
+    const { isFocused, focusEventHandlers } = useFocused();
 
-    // const { data, error } = useNews(searchText);
+    const { data: chooseOptions, isLoading: isOptionsLoading } = useNews(searchText);
 
     const { data: company, isLoading } = useIBM();
 
@@ -37,9 +39,7 @@ export default function InvestmentPage() {
         setSearchText(inputText);
     }, 1000);
 
-    if (isLoading) {
-        return <Loader />;
-    }
+    const isOptionsShown = (chooseOptions?.length || isOptionsLoading) && isFocused;
 
     const tableData = [
         { name: 'Name', uid: 'name', value: company?.Name },
@@ -94,16 +94,49 @@ export default function InvestmentPage() {
         },
     ];
 
+    if (isLoading) {
+        return <Loader />;
+    }
+
     return (
         <div>
             <h1 className="font-bold text-h1">Investment companies</h1>
-            <Input
-                value={inputText}
-                onChange={onInputChange}
-                startContent={<SearchIcon />}
-                className="w-[400px] m-auto"
-                variant="underlined"
-            />
+            <div className="relative w-[400px] m-auto">
+                <Input
+                    value={inputText}
+                    onChange={onInputChange}
+                    placeholder="Type name or some info about company"
+                    startContent={<SearchIcon />}
+                    className="w-[400px] m-auto"
+                    variant="underlined"
+                    {...focusEventHandlers}
+                />
+                {isOptionsShown && (
+                    <Card className="py-[15px] w-[400px] absolute top-[50px] z-[100] left-0">
+                        {isOptionsLoading && (
+                            <div className="h-[100px] flex items-center justify-center">
+                                <Spinner size="md" />
+                            </div>
+                        )}
+                        {chooseOptions?.map((option, index) => {
+                            return (
+                                <div key={index} className="p-[10px] hover:bg-[#f0ecec]">
+                                    <div className="flex">
+                                        <div className="font-bold mr-[10px]">
+                                            {option['1. symbol']}
+                                        </div>
+                                        <div>{option['2. name']}</div>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <div className="mr-[15px]">({option['3. type']})</div>
+                                        <div>({option['4. region']})</div>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </Card>
+                )}
+            </div>
 
             <div className="mt-[30px]">
                 <h2 className="text-h1 font-bold text-center">
@@ -153,7 +186,7 @@ export default function InvestmentPage() {
 const useNews = (searchString: string) => {
     const isSearchExist = searchString.length > 0;
 
-    return useSWR<ProductI, Error>(
+    return useSWR<CompanyShortDescription[], Error>(
         [`news`, searchString],
         isSearchExist
             ? async () => {
@@ -170,6 +203,7 @@ const useNews = (searchString: string) => {
 };
 
 const useIBM = () => {
+    // Using individual hook for IBM because of API restrictions
     return useSWR<Company, Error>([`IBM`], async () => {
         return await axios
             .get(`https://www.alphavantage.co/query?function=OVERVIEW&symbol=IBM&apikey=demo`)
