@@ -7,8 +7,10 @@ export function useFocused() {
         setIsFocused(true);
     }, []);
 
-    const onBlur = useCallback(() => {
-        setIsFocused(false);
+    const onBlur = useCallback((e: any) => {
+        if (!e.relatedTarget || !e.relatedTarget.closest('.clickable-content')) {
+            setIsFocused(false);
+        }
     }, []);
 
     const focusEventHandlers = useMemo(
