@@ -27,7 +27,7 @@ export default function InvestmentPage() {
     const { isFocused, focusEventHandlers } = useFocused();
     const [selectedTicker, setSelectedTicker] = useState('');
     const { data: chooseOptions, isLoading: isOptionsLoading } = useNews(searchText);
-
+    
     // const chooseOptions: CompanyShortDescription[] = [{
     //     '1. symbol': 'Sb',
     //     '2. name': 'Name',
@@ -43,9 +43,14 @@ export default function InvestmentPage() {
 
     const { data: company, isLoading } = useIBM();
     const { data: selectedCompany } = useCompanyByTicker(selectedTicker);
+    console.log('selectedCompany:',selectedCompany);
 
     const isCompanyIbm = useMemo(() => {
-        return JSON.stringify(company) === JSON.stringify(selectedCompany);
+        if (company && selectedCompany) {
+            return JSON.stringify(company) === JSON.stringify(selectedCompany);
+        }
+
+        return true;
     }, [company, selectedCompany]);
 
 
@@ -153,7 +158,7 @@ export default function InvestmentPage() {
                                 <div
                                     onClick={onSelectCompanyFromOptionsClick(option)}
                                     key={index}
-                                    className='p-[10px] bg-red-600 hover:bg-[#f0ecec] cursor-pointer'
+                                    className='p-[10px] hover:bg-[#f0ecec] cursor-pointer'
                                 >
                                     <div className='flex'>
                                         <div className='font-bold mr-[10px]'>
@@ -177,7 +182,7 @@ export default function InvestmentPage() {
                     {currentCompany?.Name} ({currentCompany?.Symbol})
                 </h2>
                 <Card className='my-[30px] text-h2 p-[30px] flex items-center justify-center'>
-                    <Image className='mb-[20px] w-[300px] h-[200px]' src={IbmLogo.src} alt='IBM' />
+                    {isCompanyIbm && <Image className='mb-[20px] w-[300px] h-[200px]' src={IbmLogo.src} alt='IBM' />}
                     <div>{currentCompany?.Description}</div>
                 </Card>
                 <div className='flex justify-between'>
@@ -205,7 +210,7 @@ export default function InvestmentPage() {
                     </TableBody>
                 </Table>
             </div>
-            {isCompanyIbm &&   <div className='flex items-center justify-center my-[50px]'>
+            {isCompanyIbm && <div className='flex items-center justify-center my-[50px]'>
                 <iframe
                     width='80%'
                     height='600'
@@ -247,7 +252,7 @@ const useIBM = () => {
 };
 
 const useCompanyByTicker = (companyTicker: string) => {
-    return useSWR<Company, Error>([`Company`], companyTicker ? async () => {
+    return useSWR<Company, Error>([`Company`,companyTicker], companyTicker ? async () => {
         return await axios
             .get(`https://www.alphavantage.co/query?function=OVERVIEW&symbol=${companyTicker}&apikey=6Q7R37192C2O16R4`)
             .then((res) => res.data);
